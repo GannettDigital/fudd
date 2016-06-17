@@ -1,0 +1,31 @@
+{
+  "name": "fudd",
+  "version": "0.0.1",
+  "description": "rabbitmq infrastructure setup and teardown via AMQPLIB",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GannettDigital/fudd.git"
+  },
+  "author": "Gannett Digital Content Solutions",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GannettDigital/fudd/issues"
+  },
+  "homepage": "https://github.com/GannettDigital/fudd#readme",
+  "devDependencies": {
+    "chai": "3.5.0",
+    "coveralls": "2.11.9",
+    "istanbul": "0.4.3",
+    "mocha": "2.5.3",
+    "mockery": "1.7.0"
+  },
+  "dependencies": {
+    "amqplib": "0.4.2"
+  },
+  "scripts": {
+    "test": "mocha --recursive test/unit",
+    "cover": "node ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec test/unit --recursive",
+    "coveralls": "npm run cover && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov.info"
+  }
+}

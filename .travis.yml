@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+- "6"
+- "6.1"
+- "5.11"
+- "0.12"
+after_script:
+- npm run coveralls
+deploy:
+  provider: npm
+  email: npm-publisher@dhutia.net
+  api_key:
+    secure: QhLKTSljbQz5hLn0+v73ASr5LRMiJnsa4WKOrKXesF2oRjIU81hKBnSaLk5npphSUgGHdys8ZwRfwAh27A+Iz21T4KBG9MkHm5Sa8/DPuqk68UilBpofckVqnz5weMteE/0vqcsexqzPnT098ygWxE3ZiypNN9qPQxTZV2ugU279eQThpnjvWrgDZzoSqusLVggjgelhHYPPCHelvvxHwuOmcrceajCuMiscZ0Dfi1CyU7cPeJKs6rWwyL50B/y+QjXLHtlrbS/TzRHGMmMsOQgNCGQVF/4SsiaWgZUduERZWtcngJgLsI2Tzn2gNI/n6l7Ql+5A0iufy+stYgOAiW8Anrj9PjYgXnH7WChqmsCZKMYKlOddsm9EXyh3Gr7d8gJrfKJ8kqi5v5ge8dKYlAIwJAP2O+3pYo+IKxEdDnIoE3QV0F1t2pZjRcJeI4ta76umPQgqJ0ud3BOlgqS6exSnaadkTL88gg3QF5VBXSP82WtFb3W0ZAcpJ0FjD00z4euMqKciuCp++6Vr/rc83yCxOgH3orQRoQm4n6/M8ePso7vEC8LBcgyDVzAchPnf2AD52Lm3UHg5+zZlSy4LJ6cexdZ5xm4LL3wyKM0cEGXtKyyMMJ8s6MMt9q0H2wK0QPLk8BkUvMNlBLdfHlRoED1t7ilwxK2+H0Xa5bCOlAY=
+  on:
+    tags: true
