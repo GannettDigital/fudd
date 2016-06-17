@@ -17,6 +17,7 @@
     "chai": "3.5.0",
     "coveralls": "2.11.9",
     "istanbul": "0.4.3",
+    "jscs": "^3.0.4",
     "mocha": "2.5.3",
     "mockery": "1.7.0"
   },
@@ -25,6 +26,7 @@
   },
   "scripts": {
     "test": "mocha --recursive test/unit",
+    "lint": "./node_modules/.bin/jscs ./lib/ ./test",
     "cover": "node ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec test/unit --recursive",
     "coveralls": "npm run cover && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov.info"
   }

@@ -4,7 +4,7 @@ var expect = require('chai').expect;
 describe('fudd', function() {
 
     var fudd;
-    before(function () {
+    before(function() {
         var Fudd = require('../../lib/fudd.js');
         fudd = new Fudd();
     });
