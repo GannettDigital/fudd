@@ -1,13 +1,12 @@
 'use strict';
-var os = require('os');
 module.exports = {
     cluster: {
         port: 5672,
         vhost: '/',
-        login: 'p@$$',
+        login: 'guest',
         heartbeat: 10,
-        password: 'p@$$',
-        host: os.hostname()
+        password: 'guest',
+        host: 'rabbit'
     },
     exchanges: [
         {
