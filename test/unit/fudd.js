@@ -37,11 +37,6 @@ describe('fudd', function() {
 
     before('enable mockery', function() {
         mockery.enable({useCleanCache: true});
-    });
-
-    after('disable mockery', mockery.disable);
-
-    beforeEach('setup mocks', function() {
         mockery.registerAllowable('../../lib/fudd.js');
 
         mockery.registerMock('amqplib/callback_api', {});
@@ -54,6 +49,8 @@ describe('fudd', function() {
         Fudd = require('../../lib/fudd.js');
     });
 
+    after('disable mockery', mockery.disable);
+
     describe('setup', function() {
         var config = {thisIs: 'config'};
         var callbackSpy;
@@ -61,6 +58,7 @@ describe('fudd', function() {
         var boundConnect = function connectBindResult() {};
 
         before('setup stubs', function() {
+            callbackSpy = sinon.spy();
             connectBindStub = sinon.stub(Fudd._connect, 'bind').returns(boundConnect);
         });
 
@@ -69,7 +67,7 @@ describe('fudd', function() {
         });
 
         beforeEach('reset stubs', function() {
-            callbackSpy = sinon.spy();
+            callbackSpy.reset();
             connectBindStub.reset();
             seriesStub.reset();
             mapEachStub.reset();
@@ -86,6 +84,5 @@ describe('fudd', function() {
             expect(seriesStub.args[0][0]).to.eql([boundConnect, Fudd._createChannel]);
         });
 
-        it('');
     });
 });
