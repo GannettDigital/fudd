@@ -75,7 +75,7 @@ describe('fudd integration test', function() {
         });
     });
 
-    it('should have come across corret number of messages', function() {
+    it('should have come across correct number of messages', function() {
         // msg -  route
         // 1   - fanout to queue1
         // 2   - fanout to queue1
