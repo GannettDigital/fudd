@@ -1,5 +1,4 @@
 'use strict';
-var os = require('os');
 module.exports = {
     cluster: {
         port: 5672,
