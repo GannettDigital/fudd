@@ -4,10 +4,10 @@ module.exports = {
     cluster: {
         port: 5672,
         vhost: '/',
-        login: 'p@$$',
+        login: 'test',
         heartbeat: 10,
-        password: 'p@$$',
-        host: os.hostname()
+        password: 'test',
+        host: 'rabbit'
     },
     exchanges: [
         {
