@@ -54,8 +54,6 @@ describe('fudd', function() {
         Fudd = require('../../lib/fudd.js');
     });
 
-    after('disable mockery', mockery.disable);
-
     describe('setup', function() {
         var config = {thisIs: 'config'};
         var callbackSpy;
