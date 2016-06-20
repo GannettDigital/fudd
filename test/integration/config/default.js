@@ -6,7 +6,7 @@ module.exports = {
         login: 'p@$$',
         heartbeat: 10,
         password: 'p@$$',
-        host: 'localhost'
+        host: 'server'
     },
     exchanges: [
         {
