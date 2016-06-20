@@ -86,6 +86,6 @@ describe('fudd', function() {
             expect(seriesStub.args[0][0]).to.eql([boundConnect, Fudd._createChannel]);
         });
 
-        it('')
+        it('');
     });
 });
