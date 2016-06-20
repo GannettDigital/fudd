@@ -52,18 +52,29 @@ describe('fudd', function() {
     after('disable mockery', mockery.disable);
 
     describe('setup', function() {
-        var config = {thisIs: 'config'};
         var callbackSpy;
         var connectBindStub;
+        var createExchangeBindStub;
+        var createQueueBindStub;
+        var createBindingsBindStub;
         var boundConnect = function connectBindResult() {};
+        var boundCreateExchange = function createExchangeBindResult() {};
+        var boundCreateQueue = function createQueueBindResult() {};
+        var boundCreateBindings = function createBindingsBindResult() {};
 
         before('setup stubs', function() {
             callbackSpy = sinon.spy();
             connectBindStub = sinon.stub(Fudd._connect, 'bind').returns(boundConnect);
+            createExchangeBindStub = sinon.stub(Fudd._createExchange, 'bind').returns(boundCreateExchange);
+            createQueueBindStub = sinon.stub(Fudd._createQueue, 'bind').returns(boundCreateQueue);
+            createBindingsBindStub = sinon.stub(Fudd._createBindings, 'bind').returns(boundCreateBindings);
         });
 
         after('restore stubbed methods', function() {
             Fudd._connect.bind.restore();
+            Fudd._createExchange.bind.restore();
+            Fudd._createQueue.bind.restore();
+            Fudd._createBindings.bind.restore();
         });
 
         beforeEach('reset stubs', function() {
@@ -71,6 +82,9 @@ describe('fudd', function() {
             connectBindStub.reset();
             seriesStub.reset();
             mapEachStub.reset();
+            createExchangeBindStub.reset();
+            createQueueBindStub.reset();
+            createBindingsBindStub.reset();
             Fudd.setup(config, callbackSpy);
         });
 
@@ -83,6 +97,16 @@ describe('fudd', function() {
         it('should invoke series with the bound _connect and Fudd._create channel functions', function() {
             expect(seriesStub.args[0][0]).to.eql([boundConnect, Fudd._createChannel]);
         });
+
+        it('should invoke series again with a sequence of functions derived from the config', function() {
+            seriesStub.callArgWith(1, null, 'connection', 'channel');
+            expect(seriesStub.args[1][0]).to.eql([
+                boundCreateExchange,
+                boundCreateQueue,
+                boundCreateBindings
+            ]);
+        });
+
 
     });
 });
