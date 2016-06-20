@@ -37,6 +37,11 @@ describe('fudd', function() {
 
     before('enable mockery', function() {
         mockery.enable({useCleanCache: true});
+    });
+
+    after('disable mockery', mockery.disable);
+
+    beforeEach('setup mocks', function() {
         mockery.registerAllowable('../../lib/fudd.js');
 
         mockery.registerMock('amqplib/callback_api', {});
@@ -80,7 +85,7 @@ describe('fudd', function() {
         });
 
         it('should invoke series with the bound _connect and Fudd._create channel functions', function() {
-            expect(seriesStub.args[0][0]).to.eql([boundConnect, Fudd._createChannel])
+            expect(seriesStub.args[0][0]).to.eql([boundConnect, Fudd._createChannel]);
         });
 
         it('')
