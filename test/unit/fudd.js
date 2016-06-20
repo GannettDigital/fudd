@@ -62,7 +62,7 @@ describe('fudd', function() {
             mockery.registerMock('./amqp-config-utils.js', {});
             Fudd = require('../../lib/fudd.js');
         });
-        
+
         before('setup stubs', function() {
             callbackSpy = sinon.spy();
             connectBindStub = sinon.stub(Fudd._connect, 'bind').returns(boundConnect);
@@ -144,6 +144,6 @@ describe('fudd', function() {
             expect(disconnectStub.args[0]).to.eql([
                 'connection', callbackSpy
             ]);
-        })
+        });
     });
 });

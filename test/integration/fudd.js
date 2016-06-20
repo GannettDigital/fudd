@@ -16,39 +16,38 @@ describe('fudd integration test', function() {
         fudd.setup(config, done);
     });
 
-    config.exchanges.forEach(function(exchangeDefinition){
-        it('should verify the exchange ' + exchangeDefinition.name + ' exists', function(done){
+    config.exchanges.forEach(function(exchangeDefinition) {
+        it('should verify the exchange ' + exchangeDefinition.name + ' exists', function(done) {
             var establishChannel = [fudd._connect.bind(null, config), fudd._createChannel];
-            series(establishChannel, function(err, connection, channel){
-                if(err) return done(err);
+            series(establishChannel, function(err, connection, channel) {
+                if (err) return done(err);
 
-                channel.checkExchange(exchangeDefinition.name, function(err){
-                    if(err) return done(err);
+                channel.checkExchange(exchangeDefinition.name, function(err) {
+                    if (err) return done(err);
 
                     fudd._disconnect(connection, done);
                 });
 
-
-            })
-        })
+            });
+        });
     });
 
-    config.queues.forEach(function(queueDefinition){
-        it('should verify the queue ' + queueDefinition.name + ' exists', function(done){
+    config.queues.forEach(function(queueDefinition) {
+        it('should verify the queue ' + queueDefinition.name + ' exists', function(done) {
             var establishChannel = [fudd._connect.bind(null, config), fudd._createChannel];
-            series(establishChannel, function(err, connection, channel){
-                if(err) return done(err);
+            series(establishChannel, function(err, connection, channel) {
+                if (err) return done(err);
 
-                channel.checkQueue(queueDefinition.name, function(err){
-                    if(err) return done(err);
+                channel.checkQueue(queueDefinition.name, function(err) {
+                    if (err) return done(err);
 
                     fudd._disconnect(connection, done);
                 });
-            })
-        })
+            });
+        });
     });
 
-    it('should establish channel for messages', function(done){
+    it('should establish channel for messages', function(done) {
         var establishChannel = [fudd._connect.bind(null, config), fudd._createChannel];
         series(establishChannel, function(err, connection, channel) {
             if (err) return done(err);
@@ -61,22 +60,22 @@ describe('fudd integration test', function() {
     });
 
     // specific tests
-    it('should publish messages to the fanout', function(){
+    it('should publish messages to the fanout', function() {
         verificationChannel.publish('fanout.fx', 'some.key', new Buffer('message1'));
         verificationChannel.publish('fanout.fx', 'key.topic1', new Buffer('message1'));
         verificationChannel.publish('fanout.fx', 'key.topic2', new Buffer('message1'));
     });
 
-    config.queues.forEach(function(queueDefinition){
-        it('should purge the ' + queueDefinition.name + ' queue', function(done){
-            verificationChannel.purgeQueue(queueDefinition.name, function(err, ok){
+    config.queues.forEach(function(queueDefinition) {
+        it('should purge the ' + queueDefinition.name + ' queue', function(done) {
+            verificationChannel.purgeQueue(queueDefinition.name, function(err, ok) {
                 messageCounter += ok.messageCount;
                 done();
-            })
+            });
         });
     });
 
-    it('should have come across corret number of messages', function(){
+    it('should have come across corret number of messages', function() {
         // msg -  route
         // 1   - fanout to queue1
         // 2   - fanout to queue1
