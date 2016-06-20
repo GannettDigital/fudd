@@ -229,108 +229,216 @@ describe('fudd', function() {
                 ]);
             });
         });
+    });
 
-        describe('_createExchange', function() {
-            var assertExchangeStub;
-            var mockChannel;
-            var callbackStub;
-            var error;
-            var exchangeDefinition;
+    describe('_createExchange', function() {
+        var assertExchangeStub;
+        var mockChannel;
+        var callbackStub;
+        var error;
+        var exchangeDefinition;
 
-            beforeEach(function() {
-                mockChannel = {assertExchange: assertExchangeStub = sinon.stub()};
-                callbackStub = sinon.stub();
-                error = new Error('something broke');
-                exchangeDefinition = {name: 'na.me', type: 'fanout', options: {opt:'ion'}};
-            });
-
-            it('should call assertExchange with exchange definition & options', function() {
-                Fudd._createExchange(mockChannel, exchangeDefinition, callbackStub);
-                expect(assertExchangeStub.args[0]).to.eql([exchangeDefinition.name, exchangeDefinition.type, exchangeDefinition.options, callbackStub]);
-            });
-
-            it('should callback with error if assertExchange calls back with error', function() {
-                assertExchangeStub.callsArgWith(3, error);
-                Fudd._createExchange(mockChannel, exchangeDefinition, callbackStub);
-                expect(callbackStub.calledWith(error));
-            });
+        beforeEach(function() {
+            mockChannel = {assertExchange: assertExchangeStub = sinon.stub()};
+            callbackStub = sinon.stub();
+            error = new Error('something broke');
+            exchangeDefinition = {name: 'na.me', type: 'fanout', options: {opt:'ion'}};
         });
 
-        describe('_createQueue', function() {
-            var assertQueueStub;
-            var mockChannel;
-            var callbackStub;
-            var error;
-            var queueDefinition;
-
-            beforeEach(function() {
-                mockChannel = {assertQueue: assertQueueStub = sinon.stub()};
-                callbackStub = sinon.stub();
-                error = new Error('something broke');
-                queueDefinition = {name: 'na.me', options: {opt:'ion'}};
-            });
-
-            it('should call assertQueue with queue definition & options', function() {
-                Fudd._createQueue(mockChannel, queueDefinition, callbackStub);
-                expect(assertQueueStub.args[0]).to.eql([queueDefinition.name, queueDefinition.options, callbackStub]);
-            });
-
-            it('should callback with error if assertQueue calls back with error', function() {
-                assertQueueStub.callsArgWith(2, error);
-                Fudd._createQueue(mockChannel, queueDefinition, callbackStub);
-                expect(callbackStub.calledWith(error));
-            });
+        it('should call assertExchange with exchange definition & options', function() {
+            Fudd._createExchange(mockChannel, exchangeDefinition, callbackStub);
+            expect(assertExchangeStub.calledWith(exchangeDefinition.name, exchangeDefinition.type, exchangeDefinition.options)).to.equal(true);
         });
 
-        describe('_deleteExchange', function() {
-            var deleteExchangeStub;
-            var mockChannel;
-            var callbackStub;
-            var error;
-            var exchangeDefinition;
+        it('should callback with error if assertExchange calls back with error', function() {
+            assertExchangeStub.callsArgWith(3, error);
+            Fudd._createExchange(mockChannel, exchangeDefinition, callbackStub);
+            expect(callbackStub.calledWith(error));
+        });
+    });
 
-            beforeEach(function() {
-                mockChannel = {deleteExchange: deleteExchangeStub = sinon.stub()};
-                callbackStub = sinon.stub();
-                error = new Error('something broke');
-                exchangeDefinition = {name: 'na.me', options: {opt:'ion'}};
-            });
+    describe('_createQueue', function() {
+        var assertQueueStub;
+        var mockChannel;
+        var callbackStub;
+        var error;
+        var queueDefinition;
 
-            it('should call deleteExchange with exchange name', function() {
-                Fudd._deleteExchange(mockChannel, exchangeDefinition, callbackStub);
-                expect(deleteExchangeStub.args[0]).to.eql([exchangeDefinition.name, {}, callbackStub]);
-            });
-
-            it('should callback with error if deleteExchange calls back with error', function() {
-                deleteExchangeStub.callsArgWith(2, error);
-                Fudd._deleteExchange(mockChannel, exchangeDefinition, callbackStub);
-                expect(callbackStub.calledWith(error));
-            });
+        beforeEach(function() {
+            mockChannel = {assertQueue: assertQueueStub = sinon.stub()};
+            callbackStub = sinon.stub();
+            error = new Error('something broke');
+            queueDefinition = {name: 'na.me', options: {opt:'ion'}};
         });
 
-        describe('_deleteQueue', function() {
-            var deleteQueue;
-            var mockChannel;
-            var callbackStub;
-            var error;
-            var queueDefinition;
+        it('should call assertQueue with queue definition & options', function() {
+            Fudd._createQueue(mockChannel, queueDefinition, callbackStub);
+            expect(assertQueueStub.calledWith(queueDefinition.name, queueDefinition.options)).to.equal(true);
+        });
 
-            beforeEach(function() {
-                mockChannel = {deleteQueue: deleteQueue = sinon.stub()};
-                callbackStub = sinon.stub();
-                error = new Error('something broke');
-                queueDefinition = {name: 'na.me', options: {opt:'ion'}};
-            });
+        it('should callback with error if assertQueue calls back with error', function() {
+            assertQueueStub.callsArgWith(2, error);
+            Fudd._createQueue(mockChannel, queueDefinition, callbackStub);
+            expect(callbackStub.calledWith(error));
+        });
+    });
 
-            it('should call deleteQueue with queue name', function() {
-                Fudd._deleteQueue(mockChannel, queueDefinition, callbackStub);
-                expect(deleteQueue.args[0]).to.eql([queueDefinition.name, {}, callbackStub]);
-            });
+    describe('_deleteExchange', function() {
+        var deleteExchangeStub;
+        var mockChannel;
+        var callbackStub;
+        var error;
+        var exchangeDefinition;
 
-            it('should callback with error if deleteQueue calls back with error', function() {
-                deleteQueue.callsArgWith(2, error);
-                Fudd._deleteQueue(mockChannel, queueDefinition, callbackStub);
-                expect(callbackStub.calledWith(error));
+        beforeEach(function() {
+            mockChannel = {deleteExchange: deleteExchangeStub = sinon.stub()};
+            callbackStub = sinon.stub();
+            error = new Error('something broke');
+            exchangeDefinition = {name: 'na.me', options: {opt:'ion'}};
+        });
+
+        it('should call deleteExchange with exchange name', function() {
+            Fudd._deleteExchange(mockChannel, exchangeDefinition, callbackStub);
+            expect(deleteExchangeStub.calledWith(exchangeDefinition.name, {})).to.equal(true);
+        });
+
+        it('should callback with error if deleteExchange calls back with error', function() {
+            deleteExchangeStub.callsArgWith(2, error);
+            Fudd._deleteExchange(mockChannel, exchangeDefinition, callbackStub);
+            expect(callbackStub.calledWith(error));
+        });
+    });
+
+    describe('_deleteQueue', function() {
+        var deleteQueue;
+        var mockChannel;
+        var callbackStub;
+        var error;
+        var queueDefinition;
+
+        beforeEach(function() {
+            mockChannel = {deleteQueue: deleteQueue = sinon.stub()};
+            callbackStub = sinon.stub();
+            error = new Error('something broke');
+            queueDefinition = {name: 'na.me', options: {opt:'ion'}};
+        });
+
+        it('should call deleteQueue with queue name', function() {
+            Fudd._deleteQueue(mockChannel, queueDefinition, callbackStub);
+            expect(deleteQueue.calledWith(queueDefinition.name, {})).to.equal(true);
+        });
+
+        it('should callback with error if deleteQueue calls back with error', function() {
+            deleteQueue.callsArgWith(2, error);
+            Fudd._deleteQueue(mockChannel, queueDefinition, callbackStub);
+            expect(callbackStub.calledWith(error));
+        });
+    });
+
+    describe('_createBindings', function() {
+        var createBindingBindStub;
+        var boundCreateBinding = function() {};
+        var bindingDefinition;
+        var callbackSpy;
+
+        before('setup stubs', function() {
+            createBindingBindStub = sinon.stub(Fudd._createBinding, 'bind').returns(boundCreateBinding);
+            bindingDefinition = {bindingKeys:['#', '#.#'], bindingType: 'queue', to: 'x', from: 'y'};
+            callbackSpy = sinon.spy();
+        });
+
+        after('restore stubs', function() {
+            Fudd._createBinding.bind.restore();
+        });
+
+        beforeEach('reset stubs & invoke', function() {
+            createBindingBindStub.reset();
+            callbackSpy.reset();
+            Fudd._createBindings({}, bindingDefinition, callbackSpy);
+        });
+
+        it('should call mapEach with all bindingKeys and a bound createBinding call', function() {
+            expect(mapEachStub.calledWith(bindingDefinition.bindingKeys, boundCreateBinding)).to.eql(true);
+        });
+
+        it('should callback with error if mapEach calls back with error', function() {
+            var error = new Error('boo');
+            mapEachStub.callsArgWith(2, error);
+            Fudd._createBindings({}, bindingDefinition, callbackSpy);
+            expect(callbackSpy.calledWith(error)).to.eql(true);
+        });
+    });
+
+    describe('_createBinding (queue)', function() {
+        var bindQueueStub;
+        var mockChannel;
+        var callbackStub;
+        var error;
+        var bindingDefinition;
+
+        beforeEach(function() {
+            mockChannel = {bindQueue: bindQueueStub = sinon.stub()};
+            callbackStub = sinon.stub();
+            error = new Error('something broke');
+            bindingDefinition = {to: 'y', from: 'x', options: {opt: 'ion'}, bindingType: 'queue'};
+        });
+
+        it('should call bindQueue with queue name & source exchange', function() {
+            Fudd._createBinding(mockChannel, bindingDefinition, '#', callbackStub);
+            expect(bindQueueStub.calledWith(bindingDefinition.to, bindingDefinition.from, '#', bindingDefinition.options)).to.equal(true);
+        });
+
+        it('should callback with error if bindQueue calls back with error', function() {
+            bindQueueStub.callsArgWith(4, error);
+            Fudd._createBinding(mockChannel, bindingDefinition, '#', callbackStub);
+            expect(callbackStub.calledWith(error));
+        });
+    });
+
+    describe('_createBinding (exchange)', function() {
+        var bindExchangeStub;
+        var mockChannel;
+        var callbackStub;
+        var error;
+        var bindingDefinition;
+
+        beforeEach(function() {
+            mockChannel = {bindExchange: bindExchangeStub = sinon.stub()};
+            callbackStub = sinon.stub();
+            error = new Error('something broke');
+            bindingDefinition = {to: 'y', from: 'x', options: {opt: 'ion'}, bindingType: 'exchange'};
+        });
+
+        it('should call bindExchange with exchange name & source exchange', function() {
+            Fudd._createBinding(mockChannel, bindingDefinition, '#', callbackStub);
+            expect(bindExchangeStub.calledWith(bindingDefinition.to, bindingDefinition.from, '#', bindingDefinition.options)).to.equal(true);
+        });
+
+        it('should callback with error if bindExchange calls back with error', function() {
+            bindExchangeStub.callsArgWith(4, error);
+            Fudd._createBinding(mockChannel, bindingDefinition, '#', callbackStub);
+            expect(callbackStub.calledWith(error));
+        });
+    });
+
+    describe('_createBinding (unsupported)', function() {
+        var bindExchangeStub;
+        var mockChannel;
+        var callbackStub;
+        var error;
+        var bindingDefinition;
+
+        beforeEach(function() {
+            mockChannel = {bindExchange: bindExchangeStub = sinon.stub()};
+            callbackStub = sinon.stub();
+            error = new Error('something broke');
+            bindingDefinition = {to: 'y', from: 'x', options: {opt: 'ion'}, bindingType: 'exhcabge'};
+        });
+
+        it('should callback with error if bindExchange calls back with error', function() {
+            var message = 'unsupported binding type: ' + bindingDefinition.bindingType;
+            Fudd._createBinding(mockChannel, bindingDefinition, '#', function(err) {
+                expect(err.message).to.equal(message);
             });
         });
     });
