@@ -4,7 +4,7 @@ module.exports = {
     cluster: {
         port: 5672,
         vhost: '/',
-        login: 'p@$$',
+        login: 'travis',
         heartbeat: 10,
         password: 'p@$$',
         host: 'rabbit'
