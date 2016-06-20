@@ -1,6 +1,8 @@
 language: node_js
 services:
 - rabbitmq
+env:
+- NODE_CONFIG_DIR='./test/integration/config'
 node_js:
 - "6"
 - "6.1"
