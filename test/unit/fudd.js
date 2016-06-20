@@ -83,5 +83,6 @@ describe('fudd', function() {
         it('should invoke series with the bound _connect and Fudd._create channel functions', function() {
             expect(seriesStub.args[0][0]).to.eql([boundConnect, Fudd._createChannel]);
         });
+
     });
 });

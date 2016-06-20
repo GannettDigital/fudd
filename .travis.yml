@@ -11,8 +11,9 @@ node_js:
 - "0.12"
 before_script:
 - npm run lint
-- rabbitmqctl add_user travis p@$$
-- rabbitmqctl set_permissions travis ".*" ".*" ".*"
+- sudo rabbitmqctl status
+- sudo rabbitmqctl add_user travis p@$$
+- sudo rabbitmqctl set_permissions travis ".*" ".*" ".*"
 after_script:
 - npm run coveralls
 deploy:
