@@ -450,15 +450,18 @@ describe('fudd', function() {
         });
     });
 
-    describe('_disconnect & createChannel', function() {
+    describe('_connect, _disconnect & createChannel', function() {
+
+        var formatAmqpUtilsStub;
+        var connectStub;
 
         before(function() {
             mockery.resetCache();
             mockery.deregisterAll();
             mockery.registerAllowable('../../lib/fudd.js');
-            mockery.registerMock('amqplib/callback_api', {});
+            mockery.registerMock('amqplib/callback_api', {connect: connectStub = sinon.stub()});
             mockery.registerMock('palinode', {});
-            mockery.registerMock('./amqp-config-utils.js', {});
+            mockery.registerMock('./amqp-config-utils.js', formatAmqpUtilsStub = sinon.stub());
             Fudd = require('../../lib/fudd.js');
         });
 
@@ -478,6 +481,19 @@ describe('fudd', function() {
             it('should call close on the provided connection', function() {
                 Fudd._disconnect(connection, callbackSpy);
                 expect(connection.close.callCount).to.equal(1);
+            });
+        });
+
+        describe('_connect', function() {
+            it('should call formatAmqpUtils with config.cluster', function() {
+                Fudd._connect(connection, callbackSpy);
+                expect(formatAmqpUtilsStub.calledWith(config.cluster)).to.eql(true);
+            });
+
+            it('should call connect with url & callback', function() {
+                formatAmqpUtilsStub.returns('a.url');
+                Fudd._connect(connection, callbackSpy);
+                expect(connectStub.calledWith('a.url', callbackSpy)).to.eql(true);
             });
         });
 
