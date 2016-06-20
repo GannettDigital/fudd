@@ -5,11 +5,35 @@
 simple rabbit mq infrastructure setup/teardown utility
 
 ## Installation
+```
+npm install fudd```
 
 ## Test
 
+```npm run test```
+This will run both unit tests & integration tests. To successfully run integration tests, you must have a rabbitmq instance 
+available & configured. See Configuration for examples
+
 ## Coverage 
 
+```npm run cover-html```
+
 ## Usage
+
+```
+var fudd = require('fudd');
+
+fudd.setup(config, function(err){
+    if(err) throw err;
+    
+    // do your thing with rabbitmq
+});
+
+fudd.teardown(config, function(err){
+    if(err) throw err;
+    
+    // all things torn
+});
+```
 
 ## Configuration
