@@ -7,7 +7,7 @@ module.exports = {
         login: 'p@$$',
         heartbeat: 10,
         password: 'p@$$',
-        host: os.hostname()
+        host: 'rabbit'
     },
     exchanges: [
         {
