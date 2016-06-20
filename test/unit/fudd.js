@@ -107,6 +107,5 @@ describe('fudd', function() {
             ]);
         });
 
-
     });
 });
