@@ -34,26 +34,20 @@ describe('fudd', function() {
 
     before('enable mockery', function() {
         mockery.enable({useCleanCache: true});
-        mockery.registerAllowable('../../lib/fudd.js');
     });
 
     after('disable mockery', mockery.disable);
 
-    describe('setup', function() {
+    describe('setup and teardown', function() {
         var callbackSpy;
         var connectBindStub;
         var disconnectStub;
-        var createExchangeBindStub;
-        var createQueueBindStub;
-        var createBindingsBindStub;
         var boundConnect = function connectBindResult() {};
-        var boundCreateExchange = function createExchangeBindResult() {};
-        var boundCreateQueue = function createQueueBindResult() {};
-        var boundCreateBindings = function createBindingsBindResult() {};
 
         before('setup mocks', function() {
             mockery.deregisterAll();
             mockery.resetCache();
+            mockery.registerAllowable('../../lib/fudd.js');
             mockery.registerMock('amqplib/callback_api', {});
             mockery.registerMock('palinode', {
                 series: seriesStub = sinon.stub(),
@@ -67,16 +61,10 @@ describe('fudd', function() {
             callbackSpy = sinon.spy();
             connectBindStub = sinon.stub(Fudd._connect, 'bind').returns(boundConnect);
             Fudd.__proto__._disconnect = disconnectStub = sinon.spy();
-            createExchangeBindStub = sinon.stub(Fudd._createExchange, 'bind').returns(boundCreateExchange);
-            createQueueBindStub = sinon.stub(Fudd._createQueue, 'bind').returns(boundCreateQueue);
-            createBindingsBindStub = sinon.stub(Fudd._createBindings, 'bind').returns(boundCreateBindings);
         });
 
         after('restore stubbed methods', function() {
             Fudd._connect.bind.restore();
-            Fudd._createExchange.bind.restore();
-            Fudd._createQueue.bind.restore();
-            Fudd._createBindings.bind.restore();
         });
 
         beforeEach('reset stubs', function() {
@@ -85,65 +73,113 @@ describe('fudd', function() {
             disconnectStub.reset();
             seriesStub.reset();
             mapEachStub.reset();
-            createExchangeBindStub.reset();
-            createQueueBindStub.reset();
-            createBindingsBindStub.reset();
-            Fudd.setup(config, callbackSpy);
         });
 
-        it('should bind config to the _connect function', function() {
-            expect(connectBindStub.args[0]).to.eql([
-                null, config
-            ]);
+        describe('setup', function() {
+            var createExchangeBindStub;
+            var createQueueBindStub;
+            var createBindingsBindStub;
+            var boundCreateExchange = function createExchangeBindResult() {};
+            var boundCreateQueue = function createQueueBindResult() {};
+            var boundCreateBindings = function createBindingsBindResult() {};
+
+            before('setup stubs', function() {
+                createExchangeBindStub = sinon.stub(Fudd._createExchange, 'bind').returns(boundCreateExchange);
+                createQueueBindStub = sinon.stub(Fudd._createQueue, 'bind').returns(boundCreateQueue);
+                createBindingsBindStub = sinon.stub(Fudd._createBindings, 'bind').returns(boundCreateBindings);
+            });
+
+            after('restore stubs', function() {
+                Fudd._createExchange.bind.restore();
+                Fudd._createQueue.bind.restore();
+                Fudd._createBindings.bind.restore();
+            });
+
+            beforeEach('reset stubs & invoke', function() {
+                createExchangeBindStub.reset();
+                createQueueBindStub.reset();
+                createBindingsBindStub.reset();
+                Fudd.setup(config, callbackSpy);
+            });
+
+            it('should bind config to the _connect function', function() {
+                expect(connectBindStub.args[0]).to.eql([
+                    null, config
+                ]);
+            });
+
+            it('should invoke series with the bound _connect and Fudd._create channel functions', function() {
+                expect(seriesStub.args[0][0]).to.eql([boundConnect, Fudd._createChannel]);
+            });
+
+            it('should call the finalCallback if the first series call calls back with an error', function() {
+                var expectedError = new Error('things happened');
+                seriesStub.callArgWith(1, expectedError);
+                expect(callbackSpy.args[0]).to.eql([expectedError]);
+            });
+
+            it('should call _createExchange.bind for each exchange in the config', function() {
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                expect(createExchangeBindStub.callCount).to.equal(config.exchanges.length);
+            });
+
+            it('should call _createExchange.bind for each queue in the config', function() {
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                expect(createQueueBindStub.callCount).to.equal(config.queues.length);
+            });
+
+            it('should call _createExchange.bind for each binding in the config', function() {
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                expect(createBindingsBindStub.callCount).to.equal(config.bindings.length);
+            });
+
+            it('should invoke series again with a sequence of functions derived from the config', function() {
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                expect(seriesStub.args[1][0]).to.eql([
+                    boundCreateExchange,
+                    boundCreateQueue,
+                    boundCreateBindings
+                ]);
+            });
+
+            it('should call the final callback with the error returned from creating the infrastructure', function() {
+                var expectedError = new Error('error creating infrastructure');
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                seriesStub.callArgWith(1, expectedError);
+                expect(callbackSpy.args[0]).to.eql([expectedError]);
+            });
+
+            it('should invoke Fudd._disconnect wtih the connection and callback', function() {
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                seriesStub.callArgWith(1, null);
+                expect(disconnectStub.args[0]).to.eql([
+                    'connection', callbackSpy
+                ]);
+            });
         });
 
-        it('should invoke series with the bound _connect and Fudd._create channel functions', function() {
-            expect(seriesStub.args[0][0]).to.eql([boundConnect, Fudd._createChannel]);
-        });
+        describe('teardown', function() {
+            var deleteExchangeBindStub;
+            var deleteQueueBindStub;
+            var boundDeleteExchange = function deleteExchangeBindResult() {};
+            var boundDeleteQueue = function deleteQueueBindResult() {};
 
-        it('should call the finalCallback if the first series call calls back with an error', function() {
-            var expectedError = new Error('things happened');
-            seriesStub.callArgWith(1, expectedError);
-            expect(callbackSpy.args[0]).to.eql([expectedError]);
-        });
+            before('setup stubs', function() {
+                deleteExchangeBindStub = sinon.stub(Fudd._deleteExchange, 'bind').returns(boundDeleteExchange);
+                deleteQueueBindStub = sinon.stub(Fudd._deleteQueue, 'bind').returns(boundDeleteQueue);
+            });
 
-        it('should call _createExchange.bind for each exchange in the config', function() {
-            seriesStub.callArgWith(1, null, 'connection', 'channel');
-            expect(createExchangeBindStub.callCount).to.equal(config.exchanges.length);
-        });
+            after('restore stubs', function() {
+                Fudd._deleteExchange.bind.restore();
+                Fudd._deleteQueue.bind.restore();
+            });
 
-        it('should call _createExchange.bind for each queue in the config', function() {
-            seriesStub.callArgWith(1, null, 'connection', 'channel');
-            expect(createQueueBindStub.callCount).to.equal(config.queues.length);
-        });
+            beforeEach('reset stubs & invoke', function() {
+                deleteExchangeBindStub.reset();
+                deleteQueueBindStub.reset();
+                Fudd.teardown(config, callbackSpy);
+            });
 
-        it('should call _createExchange.bind for each binding in the config', function() {
-            seriesStub.callArgWith(1, null, 'connection', 'channel');
-            expect(createBindingsBindStub.callCount).to.equal(config.bindings.length);
         });
-
-        it('should invoke series again with a sequence of functions derived from the config', function() {
-            seriesStub.callArgWith(1, null, 'connection', 'channel');
-            expect(seriesStub.args[1][0]).to.eql([
-                boundCreateExchange,
-                boundCreateQueue,
-                boundCreateBindings
-            ]);
-        });
-
-        it('should call the final callback with the error returned from creating the infrastructure', function() {
-            var expectedError = new Error('error creating infrastructure');
-            seriesStub.callArgWith(1, null, 'connection', 'channel');
-            seriesStub.callArgWith(1, expectedError);
-            expect(callbackSpy.args[0]).to.eql([expectedError]);
-        });
-
-        it('should invoke Fudd._disconnect wtih the connection and callback', function() {
-            seriesStub.callArgWith(1, null, 'connection', 'channel');
-            seriesStub.callArgWith(1, null);
-            expect(disconnectStub.args[0]).to.eql([
-                'connection', callbackSpy
-            ]);
-        })
     });
 });
