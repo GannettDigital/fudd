@@ -15,14 +15,17 @@
   "homepage": "https://github.com/GannettDigital/fudd#readme",
   "devDependencies": {
     "chai": "3.5.0",
+    "config": "^1.21.0",
     "coveralls": "2.11.9",
     "istanbul": "0.4.3",
     "jscs": "^3.0.4",
     "mocha": "2.5.3",
-    "mockery": "1.7.0"
+    "mockery": "1.7.0",
+    "sinon": "1.17.4"
   },
   "dependencies": {
-    "amqplib": "0.4.2"
+    "amqplib": "0.4.2",
+    "palinode": "0.0.3"
   },
   "scripts": {
     "test": "mocha --recursive test/unit",

@@ -4,6 +4,12 @@
 # fudd
 simple rabbit mq infrastructure setup/teardown utility
 
-# usage
+## Installation
 
-# configuration
+## Test
+
+## Coverage 
+
+## Usage
+
+## Configuration
