@@ -12,7 +12,7 @@ describe('fudd', function() {
         mockery.enable({useCleanCache: true});
     });
 
-    beforeEach('setup mocks', function(){
+    beforeEach('setup mocks', function() {
         mockery.registerAllowable('../../lib/fudd.js');
         mockery.registerAllowable('util');
 

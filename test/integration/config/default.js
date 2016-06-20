@@ -1,41 +1,55 @@
+'use strict';
 module.exports = {
-    // app configuration:
-    key: {nested: 'value'}
+    cluster: {
+        port: 5672,
+        vhost: '/',
+        login: 'guest',
+        heartbeat: 10,
+        password: 'guest',
+        host: 'localhost'
+    },
+    exchanges: [
+        {
+            name: 'fanout.fx',
+            type: 'fanout',
+            options: {}
+        },
+        {
+            name: 'topic.tx',
+            type: 'topic',
+            options: {}
+        }
+    ],
+    queues: [
+        {
+            name: 'queue1',
+            options: {durable: true}
+        },
+        {
+            name: 'queue2',
+            options: {durable: false}
+        }
+    ],
 
-    /*testInfrastructure: {
-        // fudd configuration example
-        cluster: {
-            port: 5672,
-            vhost: '/',
-            login: 'user',
-            heartbeat: 10,
-            password: 'password',
-            host: 'host.com'
+    bindings: [
+        {
+            bindingType: 'queue',
+            from: 'fanout.fx',
+            to: 'queue1',
+            bindingKeys: ['#']
         },
-        exchanges: {
-            'fanout.fx': {
-                type: 'fanout'
-            },
-            'topic.tx': {
-                type: 'topic'
-            }
+        {
+            bindingType: 'exchange',
+            from: 'fanout.fx',
+            to: 'topic.tx',
+            bindingKeys: ['#'],
+            options: {}
         },
-        queues: {
-            'queue1': {}
-        },
-        bindings: [
-            {
-                bindingType: 'queue',
-                from: 'fanout.fx',
-                to: 'queue1',
-                bindingKeys: ['#']
-            },
-            {
-                bindingType: 'exchange',
-                from: 'fanout.fx',
-                to: 'topic.tx',
-                bindingKeys: ['#']
-            }
-        ]
-    }*/
+        {
+            bindingType: 'queue',
+            from: 'topic.tx',
+            to: 'queue2',
+            bindingKeys: ['#.topic1', '#.topic2']
+        }
+    ]
 };
