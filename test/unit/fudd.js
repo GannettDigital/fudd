@@ -179,6 +179,55 @@ describe('fudd', function() {
                 deleteQueueBindStub.reset();
                 Fudd.teardown(config, callbackSpy);
             });
+
+            it('should bind config to the _connect function', function() {
+                expect(connectBindStub.args[0]).to.eql([
+                    null, config
+                ]);
+            });
+
+            it('should invoke series with the bound _connect and Fudd._create channel functions', function() {
+                expect(seriesStub.args[0][0]).to.eql([boundConnect, Fudd._createChannel]);
+            });
+
+            it('should call the finalCallback if the first series call calls back with an error', function() {
+                var expectedError = new Error('things happened');
+                seriesStub.callArgWith(1, expectedError);
+                expect(callbackSpy.args[0]).to.eql([expectedError]);
+            });
+
+            it('should call _deleteExchange.bind for each exchange in the config', function() {
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                expect(deleteExchangeBindStub.callCount).to.equal(config.exchanges.length);
+            });
+
+            it('should call _deleteExchange.bind for each queue in the config', function() {
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                expect(deleteQueueBindStub.callCount).to.equal(config.queues.length);
+            });
+
+            it('should invoke series again with a sequence of functions derived from the config', function() {
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                expect(seriesStub.args[1][0]).to.eql([
+                    boundDeleteExchange,
+                    boundDeleteQueue
+                ]);
+            });
+
+            it('should call the final callback with the error returned from creating the infrastructure', function() {
+                var expectedError = new Error('error creating infrastructure');
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                seriesStub.callArgWith(1, expectedError);
+                expect(callbackSpy.args[0]).to.eql([expectedError]);
+            });
+
+            it('should invoke Fudd._disconnect wtih the connection and callback', function() {
+                seriesStub.callArgWith(1, null, 'connection', 'channel');
+                seriesStub.callArgWith(1, null);
+                expect(disconnectStub.args[0]).to.eql([
+                    'connection', callbackSpy
+                ]);
+            });
         });
     });
 });
