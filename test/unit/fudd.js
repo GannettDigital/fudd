@@ -14,7 +14,7 @@ describe('fudd', function() {
 
     after('disable mockery', mockery.disable);
 
-    beforeEach('setup mocks', function(){
+    beforeEach('setup mocks', function() {
         mockery.registerAllowable('../../lib/fudd.js');
         mockery.registerAllowable('util');
 
@@ -30,9 +30,8 @@ describe('fudd', function() {
         var connectBindStub;
 
         before('setup stubs', function() {
-            connectBindStub
-        })
-
+            connectBindStub;
+        });
 
     });
 });
