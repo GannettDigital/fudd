@@ -2,6 +2,7 @@
 
 simple rabbit mq infrastructure setup/teardown utility
 
+[![npm version](https://badge.fury.io/js/fudd.svg)](https://badge.fury.io/js/fudd)
 [![Build Status](https://travis-ci.org/GannettDigital/fudd.svg?branch=master)](https://travis-ci.org/GannettDigital/fudd)
 [![Coverage Status](https://coveralls.io/repos/github/GannettDigital/fudd/badge.svg?branch=master)](https://coveralls.io/github/GannettDigital/fudd?branch=master)
 
