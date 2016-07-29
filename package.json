@@ -1,6 +1,6 @@
 {
   "name": "fudd",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "rabbitmq infrastructure setup and teardown via AMQPLIB",
   "main": "index.js",
   "repository": {
